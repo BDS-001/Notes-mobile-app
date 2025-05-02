@@ -36,10 +36,36 @@ export default function useDatabase() {
                 ids.add(id)
                 await AsyncStorage.setItem('NOTES_IDS', JSON.stringify(Array.from(ids)))
             }
-            return note
+            return true
         } catch (error) {
             console.log('error saving note', error)
             return Promise.reject('error saving note');
         }
     }
+
+    const deleteNote = async (id) => {
+        if (!dbReady) return Promise.reject('Database not ready');
+        if (!id) return Promise.reject('Missing note ID');
+    
+        try {
+            // Remove the note data
+            await AsyncStorage.removeItem(`NOTE_${id}`);
+    
+            // Get existing note IDs
+            const idsData = await AsyncStorage.getItem('NOTES_IDS');
+            const ids = idsData ? new Set(JSON.parse(idsData)) : new Set();
+    
+            // Remove the ID if it exists
+            if (ids.has(id)) {
+                ids.delete(id);
+                await AsyncStorage.setItem('NOTES_IDS', JSON.stringify([...ids]));
+            }
+    
+            return true;
+        } catch (error) {
+            console.error('error deleting note:', error);
+            return Promise.reject('Error deleting note');
+        }
+    };
+    
 }
