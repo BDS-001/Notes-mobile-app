@@ -93,10 +93,18 @@ export default function useDatabase() {
         }
     }, [dbReady])
 
-    const getNoteById = async (id) => {
-        if (!id) return Promise.reject('Missing note ID')
-        return AsyncStorage.getItem(id)
-    }
+    const getNoteById = useCallback(async (id) => {
+        if (!dbReady) return Promise.reject('Database not ready');
+        if (!id) return Promise.reject('Missing note ID');
+        
+        try {
+            const noteData = await AsyncStorage.getItem(`NOTE_${id}`);
+            return JSON.parse(noteData);
+        } catch (error) {
+            console.error('Error getting note by ID:', error);
+            return Promise.reject('Error fetching note');
+        }
+    }, [dbReady]);
 
     return { saveNote, deleteNote, newNote, getAllNotes }
 }
