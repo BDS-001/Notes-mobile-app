@@ -93,5 +93,10 @@ export default function useDatabase() {
         }
     }, [dbReady])
 
+    const getNoteById = async (id) => {
+        if (!id) return Promise.reject('Missing note ID')
+        return AsyncStorage.getItem(id)
+    }
+
     return { saveNote, deleteNote, newNote, getAllNotes }
 }

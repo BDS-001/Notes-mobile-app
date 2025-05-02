@@ -1,5 +1,7 @@
 import {View, Text, StyleSheet, TextInput, Dimensions } from 'react-native'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useDatabase } from './hooks/useDatabase'
+import { useParams } from 'react-router-native';
 
 const styles = StyleSheet.create({
     notes: {
@@ -19,15 +21,28 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function Home() {
+export default function Notes() {
+    // need to get id from param
+    const {getNoteById} = useDatabase()
+    const [note, setNote] = useState(null)
+
+    useEffect(() => {
+        const getNoteData = async () => {
+            const note = await getNoteById(id)
+            setNote(note)
+        }
+        getNoteData()
+    }, [])
+    
     return (
         <View style={styles.view}>
-            <TextInput placeholder='Title...' style={styles.title} placeholderTextColor="#AAAAAA" />
+            <TextInput placeholder='Title...' style={styles.title} placeholderTextColor="#AAAAAA" value={note.title} />
             <TextInput
             style={styles.notes}
             multiline={true}
             placeholder='notes...'
             placeholderTextColor="#AAAAAA"
+            value={note.content}
             />
         </View>
     )
