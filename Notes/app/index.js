@@ -2,57 +2,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import { Link } from 'expo-router';
 import useNotes from './contexts/NotesContext';
 import Header from './components/Header';
-
-const styles = StyleSheet.create({
-    view: {
-        flex: 1
-    },
-    noteItem: {
-        padding: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#EEEEEE',
-    },
-    noteTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    noteDate: {
-        fontSize: 12,
-        color: '#999',
-    },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    emptyText: {
-        fontSize: 16,
-        color: '#999',
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    errorText: {
-        fontSize: 16,
-        color: '#FF3B30',
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    newNoteButton: {
-        backgroundColor: '#007AFF',
-        padding: 16,
-        borderRadius: 8,
-        alignItems: 'center',
-        marginHorizontal: 20,
-        marginBottom: 20,
-    },
-    newNoteText: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 16,
-    }
-})
+import styles from './styles/homeStyles'
 
 export default function Home() {
   const { notes, loading, error, newNote } = useNotes();

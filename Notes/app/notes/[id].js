@@ -3,35 +3,7 @@ import { useState, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import useNotes from '../contexts/NotesContext';
 import Header from '../components/Header';
-
-const styles = StyleSheet.create({
-    notes: {
-        padding: 20,
-        flex: 1,
-        outlineStyle: 'none',
-    },
-    title: {
-        fontSize: 40,
-        margin: 20,
-        borderBottomColor: '#999999',
-        borderBottomWidth: 5,
-        outlineStyle: 'none',
-    },
-    view: {
-        flex: 1
-    },
-    loadingText: {
-        padding: 20,
-        fontSize: 16,
-        textAlign: 'center',
-    },
-    errorText: {
-        padding: 20,
-        fontSize: 16,
-        color: '#FF3B30',
-        textAlign: 'center',
-    }
-})
+import styles from '../styles/notesStyles'
 
 export default function Notes() {
   const { id } = useLocalSearchParams();
