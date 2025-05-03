@@ -1,11 +1,13 @@
 import useNotes from '../contexts/NotesContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function useAutosave(id) {
       const { getNoteById, saveNote, loading: contextLoading, error: contextError } = useNotes();
       const [note, setNote] = useState({ title: '', content: '' });
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
+
+      const saveTimeRef = useRef(null);
     
       useEffect(() => {
         const noteData = getNoteById(id);
@@ -15,27 +17,23 @@ export default function useAutosave(id) {
         setLoading(false);
       }, [id, getNoteById]);
     
-      const handleTitleChange = (text) => {
+      const handleNoteChange = (text, key) => {
+        if (saveTimeRef.current) clearTimeout(saveTimeRef.current);
+        
         setNote(prev => {
-          const updated = { ...prev, title: text };
-          saveNote(id, updated.title, updated.content)
-            .catch(err => {
-              console.error('Error saving title:', err);
+            const updatedNote = { ...prev};
+            updatedNote[key] = text
+          
+            saveTimeRef.current = setTimeout(() => {
+                saveNote(id, updatedNote.title, updatedNote.content)
+                .catch(err => {
+                    console.error('Error saving title:', err);
+                });
+            }, 750);
+          
+            return updatedNote;
             });
-          return updated;
-        });
-      };
-    
-      const handleContentChange = (text) => {
-        setNote(prev => {
-          const updated = { ...prev, content: text };
-          saveNote(id, updated.title, updated.content)
-            .catch(err => {
-              console.error('Error saving content:', err);
-            });
-          return updated;
-        });
-      };
+        };
 
-      return {handleContentChange, handleTitleChange, note, loading, error, contextError, contextLoading}
+      return {handleNoteChange, note, loading, error, contextError, contextLoading}
 }

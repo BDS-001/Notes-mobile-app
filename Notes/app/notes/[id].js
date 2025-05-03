@@ -5,7 +5,7 @@ import styles from '../styles/notesStyles'
 import useAutosave from '../hooks/useAutosave'
 export default function Notes() {
   const { id } = useLocalSearchParams();
-  const {handleContentChange, handleTitleChange, note, loading, error, contextError, contextLoading} = useAutosave(id)
+  const {handleNoteChange, note, loading, error, contextError, contextLoading} = useAutosave(id)
 
   if (loading || contextLoading) {
     return (
@@ -22,7 +22,7 @@ export default function Notes() {
         <Header />
         <Text style={styles.errorText}>{error || contextError}</Text>
       </View>
-    );
+    );handleTitleChange
   }
   
   return (
@@ -33,7 +33,7 @@ export default function Notes() {
         style={styles.title} 
         placeholderTextColor="#6C6C7E" 
         value={note.title || ''} 
-        onChangeText={handleTitleChange}
+        onChangeText={(text) => handleNoteChange(text, 'title')}
       />
       <TextInput
         style={styles.notes}
@@ -41,7 +41,7 @@ export default function Notes() {
         placeholder='Write your note here...'
         placeholderTextColor="#6C6C7E"
         value={note.content || ''}
-        onChangeText={handleContentChange}
+        onChangeText={(text) => handleNoteChange(text, 'content')}
       />
     </View>
   );
