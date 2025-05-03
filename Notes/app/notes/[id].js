@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native'
-import { useState, useEffect } from 'react'
-import useDatabase from '../hooks/useDatabase'
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { useState, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import Header from '../components/Header'
+import useNotes from '../contexts/NotesContext';
+import Header from '../components/Header';
 
 const styles = StyleSheet.create({
     notes: {
@@ -34,96 +34,78 @@ const styles = StyleSheet.create({
 })
 
 export default function Notes() {
-    const { id } = useLocalSearchParams();
-    const { getNoteById, saveNote, dbReady } = useDatabase();
-    const [note, setNote] = useState({ title: '', content: '' });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const { id } = useLocalSearchParams();
+  const { getNoteById, saveNote, loading: contextLoading, error: contextError } = useNotes();
+  const [note, setNote] = useState({ title: '', content: '' });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if (!dbReady) return;
-        
-        const getNoteData = async () => {
-            try {
-                const noteData = await getNoteById(id);
-                if (noteData) {
-                    setNote(noteData);
-                }
-            } catch (error) {
-                console.error('Error fetching note:', error);
-                setError('Could not load note. Please try again.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        if (id) {
-            getNoteData();
-        }
-    }, [id, dbReady]);
-
-    const handleTitleChange = (text) => {
-        setNote(prev => {
-            const updated = { ...prev, title: text };
-            // We're not awaiting the promise to avoid blocking the UI
-            saveNote(id, updated.title, updated.content)
-                .catch(err => {
-                    console.error('Error saving title:', err);
-                    // We could show a toast notification here if we had a toast library
-                });
-            return updated;
-        });
-    };
-
-    const handleContentChange = (text) => {
-        setNote(prev => {
-            const updated = { ...prev, content: text };
-            // We're not awaiting the promise to avoid blocking the UI
-            saveNote(id, updated.title, updated.content)
-                .catch(err => {
-                    console.error('Error saving content:', err);
-                    // We could show a toast notification here if we had a toast library
-                });
-            return updated;
-        });
-    };
-    
-    if (loading) {
-        return (
-            <View style={styles.view}>
-                <Header />
-                <Text style={styles.loadingText}>Loading...</Text>
-            </View>
-        );
+  useEffect(() => {
+    const noteData = getNoteById(id);
+    if (noteData) {
+      setNote(noteData);
     }
-    
-    if (error) {
-        return (
-            <View style={styles.view}>
-                <Header />
-                <Text style={styles.errorText}>{error}</Text>
-            </View>
-        );
-    }
-    
+    setLoading(false);
+  }, [id, getNoteById]);
+
+  const handleTitleChange = (text) => {
+    setNote(prev => {
+      const updated = { ...prev, title: text };
+      saveNote(id, updated.title, updated.content)
+        .catch(err => {
+          console.error('Error saving title:', err);
+        });
+      return updated;
+    });
+  };
+
+  const handleContentChange = (text) => {
+    setNote(prev => {
+      const updated = { ...prev, content: text };
+      saveNote(id, updated.title, updated.content)
+        .catch(err => {
+          console.error('Error saving content:', err);
+        });
+      return updated;
+    });
+  };
+  
+  if (loading || contextLoading) {
     return (
-        <View style={styles.view}>
-            <Header />
-            <TextInput 
-                placeholder='Title...' 
-                style={styles.title} 
-                placeholderTextColor="#AAAAAA" 
-                value={note.title || ''} 
-                onChangeText={handleTitleChange}
-            />
-            <TextInput
-                style={styles.notes}
-                multiline={true}
-                placeholder='notes...'
-                placeholderTextColor="#AAAAAA"
-                value={note.content || ''}
-                onChangeText={handleContentChange}
-            />
-        </View>
+      <View style={styles.view}>
+        <Header />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
     );
+  }
+  
+  if (error || contextError) {
+    return (
+      <View style={styles.view}>
+        <Header />
+        <Text style={styles.errorText}>{error || contextError}</Text>
+      </View>
+    );
+  }
+  
+  return (
+    <View style={styles.view}>
+      <Header />
+      <TextInput 
+        placeholder='Title...' 
+        style={styles.title} 
+        placeholderTextColor="#AAAAAA" 
+        value={note.title || ''} 
+        onChangeText={handleTitleChange}
+      />
+      <TextInput
+        style={styles.notes}
+        multiline={true}
+        placeholder='notes...'
+        placeholderTextColor="#AAAAAA"
+        value={note.content || ''}
+        onChangeText={handleContentChange}
+      />
+    </View>
+  );
 }

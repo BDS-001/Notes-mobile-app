@@ -1,9 +1,14 @@
-import { Stack } from 'expo-router'
+import { Stack } from 'expo-router';
+import { NotesProvider } from './contexts/NotesContext';
 
 export default function Layout() {
-    return <Stack
-    screenOptions={{
-        headerShown: false
-      }}
-    />;
+  return (
+    <NotesProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false
+        }}
+      />
+    </NotesProvider>
+  );
 }
