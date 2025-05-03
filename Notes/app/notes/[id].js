@@ -1,47 +1,12 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native';
-import { useState, useEffect } from 'react';
+import { View, Text, TextInput } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import useNotes from '../contexts/NotesContext';
 import Header from '../components/Header';
 import styles from '../styles/notesStyles'
-
+import useAutosave from '../hooks/useAutosave'
 export default function Notes() {
   const { id } = useLocalSearchParams();
-  const { getNoteById, saveNote, loading: contextLoading, error: contextError } = useNotes();
-  const [note, setNote] = useState({ title: '', content: '' });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {handleContentChange, handleTitleChange, note, loading, error, contextError, contextLoading} = useAutosave(id)
 
-  useEffect(() => {
-    const noteData = getNoteById(id);
-    if (noteData) {
-      setNote(noteData);
-    }
-    setLoading(false);
-  }, [id, getNoteById]);
-
-  const handleTitleChange = (text) => {
-    setNote(prev => {
-      const updated = { ...prev, title: text };
-      saveNote(id, updated.title, updated.content)
-        .catch(err => {
-          console.error('Error saving title:', err);
-        });
-      return updated;
-    });
-  };
-
-  const handleContentChange = (text) => {
-    setNote(prev => {
-      const updated = { ...prev, content: text };
-      saveNote(id, updated.title, updated.content)
-        .catch(err => {
-          console.error('Error saving content:', err);
-        });
-      return updated;
-    });
-  };
-  
   if (loading || contextLoading) {
     return (
       <View style={styles.view}>
