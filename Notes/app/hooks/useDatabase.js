@@ -7,22 +7,35 @@ export default function useDatabase() {
 
     useEffect(() => {
         const initializeDB = async () => {
-            const initialized = await AsyncStorage.getItem('NOTES_DB_INIT')
-            if (!initialized) {
-                await AsyncStorage.setItem('NOTES_DB_INIT', "true")
-                await AsyncStorage.setItem('NOTES_IDS', JSON.stringify([]))
+            try {
+                const initialized = await AsyncStorage.getItem('NOTES_DB_INIT')
+                if (!initialized) {
+                    await AsyncStorage.setItem('NOTES_DB_INIT', "true")
+                    await AsyncStorage.setItem('NOTES_IDS', JSON.stringify([]))
+                }
+                setDbReady(true)
+            } catch (error) {
+                console.error('Failed to initialize database:', error)
             }
-            setDbReady(true)
         }
         initializeDB()
     }, [])
 
     const saveNote = useCallback(async (id, title, content) => {
         if (!dbReady) return Promise.reject('Database not ready')
-        if (!id || !title || !content) return Promise.reject('Missing note data')
-
+        if (!id) return Promise.reject('Missing note id')
+        
         try {
-            const note = { id, title, content, updated_at: Date.now() }
+            const safeTitle = title || ''
+            const safeContent = content || ''
+            
+            const note = { 
+                id, 
+                title: safeTitle, 
+                content: safeContent, 
+                updated_at: Date.now() 
+            }
+            
             await AsyncStorage.setItem(`NOTE_${id}`, JSON.stringify(note))
 
             const idsData = await AsyncStorage.getItem('NOTES_IDS')
@@ -99,12 +112,19 @@ export default function useDatabase() {
         
         try {
             const noteData = await AsyncStorage.getItem(`NOTE_${id}`);
-            return JSON.parse(noteData);
+            return noteData ? JSON.parse(noteData) : null;
         } catch (error) {
             console.error('Error getting note by ID:', error);
             return Promise.reject('Error fetching note');
         }
     }, [dbReady]);
 
-    return { saveNote, deleteNote, newNote, getAllNotes }
+    return { 
+        saveNote, 
+        deleteNote, 
+        newNote, 
+        getAllNotes, 
+        getNoteById,
+        dbReady 
+    }
 }
