@@ -11,7 +11,9 @@ export default function Home() {
     <Link href={`/notes/${item.id}`} asChild>
       <TouchableOpacity style={styles.noteItem}>
         <Text style={styles.noteTitle}>{item.title || 'Untitled Note'}</Text>
-        <Text numberOfLines={1}>{item.content?.substring(0, 100) || 'No content'}</Text>
+        <Text style={styles.noteContent} numberOfLines={2}>
+          {item.content?.substring(0, 150) || 'No content'}
+        </Text>
         <Text style={styles.noteDate}>
           {new Date(item.updated_at).toLocaleString()}
         </Text>
@@ -55,7 +57,7 @@ export default function Home() {
         renderItem={renderNoteItem}
         keyExtractor={item => item.id}
         ListEmptyComponent={renderEmptyList}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingVertical: 8 }}
       />
       <Link href={`/notes/${newNote().id}`} asChild>
         <TouchableOpacity style={styles.newNoteButton}>

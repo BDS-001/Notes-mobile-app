@@ -66,15 +66,15 @@ export default function Notes() {
       <TextInput 
         placeholder='Title...' 
         style={styles.title} 
-        placeholderTextColor="#AAAAAA" 
+        placeholderTextColor="#6C6C7E" 
         value={note.title || ''} 
         onChangeText={handleTitleChange}
       />
       <TextInput
         style={styles.notes}
         multiline={true}
-        placeholder='notes...'
-        placeholderTextColor="#AAAAAA"
+        placeholder='Write your note here...'
+        placeholderTextColor="#6C6C7E"
         value={note.content || ''}
         onChangeText={handleContentChange}
       />

@@ -8,13 +8,18 @@ export default function Header() {
 
   return (
     <View style={styles.header}>
-      {isNotesPage && (
-        <Link href="/" style={styles.backLink}>
-          <Text style={styles.backText}>←Back</Text>
-        </Link>
-      )}
       <Text style={styles.title}>Notes</Text>
-      <View style={styles.placeholder} />
+      
+      <View style={styles.headerContent}>
+        {isNotesPage ? (
+          <Link href="/" style={styles.backLink}>
+            <Text style={styles.backText}>← Back</Text>
+          </Link>
+        ) : (
+          <View style={styles.placeholder} />
+        )}
+        <View style={styles.placeholder} />
+      </View>
     </View>
   );
 }
