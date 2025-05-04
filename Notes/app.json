@@ -5,6 +5,17 @@
       "expo-router"
     ],
     "name": "Notes",
-    "slug": "Notes"
+    "slug": "Notes",
+    "privacy": "unlisted",
+    "telemetry": false,
+    "updates": {
+      "enabled": false
+    },
+    "android": {
+      "permissions": []
+    },
+    "ios": {
+      "supportsTablet": true
+    }
   }
 }
