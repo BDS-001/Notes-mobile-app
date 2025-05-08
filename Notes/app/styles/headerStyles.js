@@ -43,5 +43,16 @@ export default StyleSheet.create({
   },
   placeholder: {
     width: 50,
+  },
+  deleteButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    backgroundColor: colors.text.error,
+    borderRadius: 8,
+  },
+  deleteText: {
+    fontSize: typography.subtitle.fontSize,
+    color: 'white',
+    fontWeight: '500',
   }
 });

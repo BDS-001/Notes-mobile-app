@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import useNotes from './contexts/NotesContext';
 import Header from './components/Header';
