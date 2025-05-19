@@ -68,7 +68,7 @@ export const typography = {
     color: colors.text.secondary,
   },
   noteTitle: {
-    fontSize: 44,
+    fontSize: 30,
     fontWeight: '600',
   }
 };
